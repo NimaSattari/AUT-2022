@@ -17,6 +17,18 @@ public class Player : MonoBehaviour
     [SerializeField] TextMeshProUGUI nextRockText;
     [SerializeField] List<TextMeshProUGUI> RockTexts = new List<TextMeshProUGUI>();
     [SerializeField] Image nextRockParent;
+    [SerializeField] bool auto = false;
+    public bool gameOver = false;
+
+    [SerializeField] GameObject winPanel;
+    [SerializeField] GameObject gameOverPanel;
+
+    [SerializeField] float autoTimer = 3f;
+    [SerializeField] float gameOverTimer = 10f;
+
+    [SerializeField] GameObject deathCam;
+
+
     private void Start()
     {
         int integer = Random.Range(0, 2);
@@ -28,37 +40,63 @@ public class Player : MonoBehaviour
         {
             goal = railObject2;
         }
-        MakeRockList();
+        if (!auto)
+        {
+            MakeRockList();
+        }
     }
-    int timer = 0;
+
     void Update()
     {
         transform.position = Vector3.MoveTowards(transform.position, goal.position, speed * Time.deltaTime);
-        if (Input.GetMouseButtonDown(0) && timer == 0)
+        if (Input.GetMouseButtonDown(0) && !auto && !gameOver && whichRockNow < howmanyrocks)
         {
-            timer = 1;
-            if(rockList[whichRockNow] == 0)
-            {
-                rockNow = rocks[0];
-            }
-            if (rockList[whichRockNow] == 1)
-            {
-                rockNow = rocks[1];
-            }
-            if (rockList[whichRockNow] == 2)
-            {
-                rockNow = rocks[2];
-            }
-            if (rockList[whichRockNow] == 3)
-            {
-                rockNow = rocks[3];
-            }
+            rockNow = rocks[rockList[whichRockNow]];
+
             TextMeshProUGUI nowRockText = RockTexts[whichRockNow];
             //RockTexts.Remove(nowRockText);
+
             Destroy(nowRockText);
             Instantiate(rockNow, transform.position - new Vector3(0, 1.55f, 0), Quaternion.identity, null);
             whichRockNow++;
-            timer = 0;
+        }
+        if (auto && autoTimer <= 0)
+        {
+            Instantiate(rockNow, transform.position - new Vector3(0, 1.55f, 0), Quaternion.identity, null);
+            autoTimer = 3;
+        }
+        if (whichRockNow == howmanyrocks)
+        {
+            StartCoroutine(WinProcess());
+        }
+        else
+        {
+            gameOverTimer -= Time.deltaTime;
+        }
+        if (gameOverTimer <= 0)
+        {
+            if (gameOverPanel != null)
+            {
+                gameOver = true;
+                gameOverPanel.SetActive(true);
+            }
+            if (deathCam != null)
+            {
+                deathCam.SetActive(true);
+            }
+        }
+        if (auto)
+        {
+            autoTimer -= Time.deltaTime;
+        }
+    }
+
+    private IEnumerator WinProcess()
+    {
+        yield return new WaitForSeconds(3f);
+        if (!gameOver)
+        {
+            winPanel.SetActive(true);
         }
     }
 
