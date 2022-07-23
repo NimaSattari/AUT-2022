@@ -6,8 +6,7 @@ public class Explosion : MonoBehaviour
 {
     public GameObject exp;
     public float expForce, radius;
-    [SerializeField] GameObject deathCam;
-    [SerializeField] GameObject gameOverPanel;
+
     [SerializeField] Player playerScript;
 
     private void OnCollisionEnter(Collision collision)
@@ -19,15 +18,9 @@ public class Explosion : MonoBehaviour
             KnockBack();
             GetComponent<MeshRenderer>().enabled = false;
             GetComponent<Collider>().enabled = false;
-            if(deathCam != null)
-            {
-                deathCam.SetActive(true);
-            }
-            if (gameOverPanel != null)
-            {
-                playerScript.gameOver = true;
-                gameOverPanel.SetActive(true);
-            }
+
+            playerScript.LoseProcess();
+
             //Destroy(gameObject);
         }
     }

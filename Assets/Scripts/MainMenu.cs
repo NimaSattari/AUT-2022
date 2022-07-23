@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] GameObject levelsPanel;
+    [SerializeField] GameObject helpPanel;
     [SerializeField] GameObject mainMenuPanel;
 
     public void StartGame(int sceneIndex)
@@ -26,6 +27,20 @@ public class MainMenu : MonoBehaviour
             levelsPanel.SetActive(true);
         }
     }
+    public void ShowHideHelp()
+    {
+        if (helpPanel.activeInHierarchy)
+        {
+            helpPanel.SetActive(false);
+            mainMenuPanel.SetActive(true);
+        }
+        else
+        {
+            mainMenuPanel.SetActive(false);
+            helpPanel.SetActive(true);
+        }
+    }
+
     public void Quit()
     {
         Application.Quit();
